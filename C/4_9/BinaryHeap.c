@@ -4,7 +4,8 @@ enum ERRORS
 {
     success = 0,
     no_memory = -1,
-    runtime_error = -2
+    runtime_error = -2,
+    not_found = -3
 };
 
 void free_binary_heap(Binary_heap_ptr * heap)
@@ -109,14 +110,16 @@ Data_ptr get_min_binary(Binary_heap_ptr heap)
     return (heap -> list)[0];
 }
 
-Data_ptr pop_binary(Binary_heap_ptr * heap)
+Data_ptr pop_binary(int * error, Binary_heap_ptr * heap)
 {
+    *error = not_found;
     if (!(*heap)) return NULL;
     if ((*heap) -> size == 0) return NULL;
     Data_ptr tmp = ((*heap) -> list)[0];
     ((*heap) -> list)[0] = ((*heap) -> list)[(*heap) -> size - 1];
     ((*heap) -> size)--;
     sift_down_binary(heap, 0);
+    *error = success;
     return tmp;
 }
 
@@ -170,7 +173,7 @@ int meld_binary(Binary_heap_ptr * new, Binary_heap_ptr * first, Binary_heap_ptr 
     }
     Data_ptr tmp = NULL;
     int error;
-    while (tmp = ((*first) -> pop(first)))
+    while (tmp = ((*first) -> pop(&error, first)))
     {
         error = heap -> insert(&heap, tmp -> priority, tmp -> time);
         free(tmp);
@@ -181,7 +184,7 @@ int meld_binary(Binary_heap_ptr * new, Binary_heap_ptr * first, Binary_heap_ptr 
             return no_memory;
         }
     }
-    while (tmp = ((*second) -> pop(second)))
+    while (tmp = ((*second) -> pop(&error, second)))
     {
         error = heap -> insert(&heap, tmp -> priority, tmp -> time);
         free(tmp);

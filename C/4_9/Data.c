@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "Data.h"
 
 Data_ptr create_data(int priority, time_t time)
